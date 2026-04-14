@@ -1,4 +1,4 @@
-const API_URL = "https://opensheet.elk.sh/YOUR_SHEET_ID/Data";
+const API_URL = "https://opensheet.elk.sh/1DFsrdpwH5XSdNcmyXCqKE-FRFSMXQKxRj2d0Fx8S8fg/Data";
 
 let fullData = [];
 
