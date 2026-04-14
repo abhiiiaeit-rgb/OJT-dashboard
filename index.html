@@ -1,25 +1,104 @@
-<h1>OJT Training Dashboard</h1>
+<head>
+  <title>Training Thruput Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<h3 id="summaryText"></h3>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      margin: 0;
+      color: #e2e8f0;
+    }
 
-<div class="kpi-container">
-  <div class="kpi-card">
-    <h2 id="totalBatches">0</h2>
-    <p>Batches</p>
+    /* HEADER BAR */
+    .header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #020617;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    /* SUBTEXT */
+    .subtitle {
+      margin-left: 30px;
+      margin-top: 10px;
+      color: #94a3b8;
+    }
+
+    /* KPI CARDS */
+    .cards {
+      display: flex;
+      gap: 20px;
+      padding: 20px 30px;
+    }
+
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 12px;
+      flex: 1;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .card h3 {
+      margin: 0;
+      color: #94a3b8;
+    }
+
+    .card p {
+      font-size: 24px;
+      margin-top: 10px;
+      color: #38bdf8;
+    }
+
+    /* CHART AREA */
+    .chart-container {
+      background: #020617;
+      margin: 20px 30px;
+      padding: 20px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="title">📊 Training Thruput</div>
   </div>
 
-  <div class="kpi-card">
-    <h2 id="totalHeadcount">0</h2>
-    <p>Headcount</p>
+  <div class="subtitle">
+    OJT Performance | Trainer Productivity | Quality Metrics
   </div>
 
-  <div class="kpi-card">
-    <h2 id="totalAttrition">0</h2>
-    <p>Attrition</p>
+  <!-- KPI CARDS -->
+  <div class="cards">
+    <div class="card">
+      <h3>Total Calls</h3>
+      <p id="totalCalls">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Avg Quality</h3>
+      <p id="avgScore">0%</p>
+    </div>
+
+    <div class="card">
+      <h3>Fatal %</h3>
+      <p id="fatalPercent">0%</p>
+    </div>
   </div>
 
-  <div class="kpi-card">
-    <h2 id="avgConversion">0%</h2>
-    <p>Avg Conv%</p>
+  <!-- CHART -->
+  <div class="chart-container">
+    <canvas id="myChart"></canvas>
   </div>
-</div>
