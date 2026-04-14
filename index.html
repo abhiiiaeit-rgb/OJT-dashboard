@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OJT Training Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>OJT Training Dashboard</h1>
+  <div class="kpis">
+    <div class="card"><h2 id="batches">0</h2><p>Batches</p></div>
+    <div class="card"><h2 id="headcount">0</h2><p>Headcount</p></div>
+    <div class="card"><h2 id="attrition">0</h2><p>Attrition</p></div>
+    <div class="card"><h2 id="conversion">0%</h2><p>Conversion</p></div>
+  </div>
+</div>
+
+<div class="filters">
+  <select id="trainerFilter"></select>
+</div>
+
+<div class="charts">
+  <canvas id="headcountChart"></canvas>
+  <canvas id="attritionChart"></canvas>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
