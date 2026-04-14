@@ -62,7 +62,7 @@ function renderDashboard(data) {
 
   data.forEach(item => {
 
-    const hc = Number(item["Headcount Day 0"]) || 0;
+    const hc = Number(item["Headcount on Start Day "]) || 0;
     const attr = Number((item["Attrition %"] || "0").replace("%",""));
 
     totalHC += hc;
