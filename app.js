@@ -1,125 +1,73 @@
 const API_URL = "https://opensheet.elk.sh/1DFsrdpwH5XSdNcmyXCqKE-FRFSMXQKxRj2d0Fx8S8fg/Data";
 
-let originalData = [];
-
 fetch(API_URL)
   .then(res => res.json())
   .then(data => {
-    originalData = data;
 
-    initFilters(data);
-    renderDashboard(data);
-  });
+    console.log(data); // debug
 
-function initFilters(data) {
+    // ✅ TOTAL BATCHES
+    const totalBatches = data.length;
 
-  createDropdown("monthFilter", data, "Month");
-  createDropdown("trainerFilter", data, "Trainer Name");
-  createDropdown("processFilter", data, "Process");
-  createDropdown("batchFilter", data, "Batches");
+    // ✅ TOTAL HEADCOUNT
+    const totalHeadcount = data.reduce((sum, row) => {
+      return sum + Number(row["Headcount on Start Day"] || 0);
+    }, 0);
 
-  document.querySelectorAll("select").forEach(select => {
-    select.addEventListener("change", applyFilters);
-  });
-}
+    // ✅ TOTAL ATTRITION
+    const totalAttrition = data.reduce((sum, row) => {
+      return sum + Number(row["Attrition"] || 0);
+    }, 0);
 
-function createDropdown(id, data, key) {
-  const values = [...new Set(data.map(d => d[key]))];
-  const select = document.getElementById(id);
+    // ✅ AVG CONVERSION %
+    let totalConv = 0;
+    let count = 0;
 
-  select.innerHTML = `<option value="">All ${key}</option>` +
-    values.map(v => `<option>${v}</option>`).join("");
-}
+    data.forEach(row => {
+      let val = row["Conversion(Training start to end) %"];
+      if (val) {
+        val = val.replace("%", "");
+        const num = Number(val);
+        if (!isNaN(num)) {
+          totalConv += num;
+          count++;
+        }
+      }
+    });
 
-function applyFilters() {
-  let filtered = originalData;
+    const avgConversion = count ? (totalConv / count).toFixed(1) : 0;
 
-  const month = document.getElementById("monthFilter").value;
-  const trainer = document.getElementById("trainerFilter").value;
-  const process = document.getElementById("processFilter").value;
-  const batch = document.getElementById("batchFilter").value;
+    // ✅ UNIQUE TRAINERS
+    const trainers = [...new Set(data.map(d => d["Trainer Name"]))];
 
-  filtered = filtered.filter(item =>
-    (!month || item["Month"] === month) &&
-    (!trainer || item["Trainer Name"] === trainer) &&
-    (!process || item["Process"] === process) &&
-    (!batch || item["Batches"] === batch)
-  );
+    // ✅ UNIQUE PROCESSES
+    const processes = [...new Set(data.map(d => d["Process"]))];
 
-  renderDashboard(filtered);
-}
+    // ✅ DATE RANGE
+    const dates = data.map(d => new Date(d["Training Start Date"]));
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
 
-let trainerChart, attritionChart;
+    const formatDate = (date) =>
+      date.toLocaleString("en-IN", { month: "short", year: "numeric" });
 
-function renderDashboard(data) {
+    // ✅ BATCH RANGE
+    const batchNumbers = data.map(d =>
+      Number(d["Batches"].replace(/\D/g, ""))
+    );
 
-  const container = document.getElementById("data");
+    const minBatch = Math.min(...batchNumbers);
+    const maxBatch = Math.max(...batchNumbers);
 
-  let totalHC = 0;
-  let totalAttr = 0;
-  let trainerMap = {};
-  let monthAttrition = {};
+    // 🎯 SET VALUES IN UI
 
-  data.forEach(item => {
+    document.getElementById("totalBatches").innerText = totalBatches;
+    document.getElementById("totalHeadcount").innerText = totalHeadcount;
+    document.getElementById("totalAttrition").innerText = totalAttrition;
+    document.getElementById("avgConversion").innerText = avgConversion + "%";
 
-    const hc = Number(item["Headcount on Start Day "]) || 0;
-    const attr = Number((item["Attrition %"] || "0").replace("%",""));
+    document.getElementById("summaryText").innerText =
+      `Batch ${minBatch} → ${maxBatch} · ${formatDate(minDate)} – ${formatDate(maxDate)} · ${trainers.length} Trainers · ${processes.length} Processes`;
 
-    totalHC += hc;
-    totalAttr += attr;
-
-    // Trainer aggregation
-    const trainer = item["Trainer Name"];
-    trainerMap[trainer] = (trainerMap[trainer] || 0) + hc;
-
-    // Month aggregation
-    const month = item["Month"];
-    monthAttrition[month] = (monthAttrition[month] || 0) + attr;
-  });
-
-  // KPIs
-  document.getElementById("totalBatches").innerText = data.length;
-  document.getElementById("totalHC").innerText = totalHC;
-  document.getElementById("avgAttrition").innerText =
-    data.length ? (totalAttr / data.length).toFixed(1) + "%" : "0%";
-
-  // Destroy old charts
-  if (trainerChart) trainerChart.destroy();
-  if (attritionChart) attritionChart.destroy();
-
-  // Trainer Chart
-  trainerChart = new Chart(document.getElementById("trainerChart"), {
-    type: "bar",
-    data: {
-      labels: Object.keys(trainerMap),
-      datasets: [{
-        label: "Headcount by Trainer",
-        data: Object.values(trainerMap)
-      }]
-    }
-  });
-
-  // Attrition Chart (Month-wise)
-  attritionChart = new Chart(document.getElementById("attritionChart"), {
-    type: "line",
-    data: {
-      labels: Object.keys(monthAttrition),
-      datasets: [{
-        label: "Attrition %",
-        data: Object.values(monthAttrition)
-      }]
-    }
-  });
-
-  // Cards
-  container.innerHTML = data.map(item => `
-    <div class="card">
-      <h3>${item["Batches"]}</h3>
-      <p><b>Trainer:</b> ${item["Trainer Name"]}</p>
-      <p><b>Process:</b> ${item["Process"]}</p>
-      <p><b>Month:</b> ${item["Month"]}</p>
-      <p><b>HC:</b> ${item["Headcount Day 0"]}</p>
-      <p><b>Attrition:</b> ${item["Attrition %"]}</p>
-    </div>
-  `).join("");
-}
+  })
+  .catch(err => console.error(err));
