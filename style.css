@@ -23,3 +23,49 @@
   --r:12px;
   --rs:8px;
 }
+/* FORCE LIGHT THEME FIX */
+
+/* Body */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Header fix */
+.header {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* Cards / Boxes */
+.card, .box, .tile {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Filters */
+select {
+  background: #ffffff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Buttons */
+button {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+/* Tabs / Navigation */
+.tab, .nav, .menu {
+  background: transparent !important;
+  color: var(--text2) !important;
+}
+
+/* Charts canvas */
+canvas {
+  background: #ffffff !important;
+  border-radius: 12px;
+}
