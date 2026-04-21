@@ -1,5 +1,3 @@
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -138,20 +136,6 @@ tbody td:first-child{color:var(--text);font-weight:500;}
 <div class="header">
   <div>
     <h1>OJT Training Dashboard</h1>
-    
-    <div style="display:flex; justify-content:center; flex-wrap:wrap;">
-
-  <div class="card">
-    <h3>Total Records</h3>
-    <h2 id="totalRecords">0</h2>
-  </div>
-
-  <div class="card">
-    <h3>Avg Score</h3>
-    <h2 id="avgScore">0</h2>
-  </div>
-
-</div>
     <p id="headerSub">Batch 127 → 286 · Jan 2024 – Mar 2026 · 6 Trainers · 41 Processes</p>
   </div>
   <div class="hstats">
@@ -328,23 +312,22 @@ const MONTHS   = ["Jan'24", "Feb'24", "Mar'24", "Apr'24", "May'24", "June'24", "
 const CH = {};
 const PAL = ['#4f8ef7','#2dd4a0','#f5a623','#f05a5a','#7c5cfc','#26c6da','#f06292','#aed581','#ef9a9a','#80cbc4'];
 
-const BASE_OPTS = scales: {
-  x: {
-    ticks: { color: '#374151' },
-    grid: { color: '#e5e7eb' }
-  },
-  y: {
-    ticks: { color: '#374151' },
-    grid: { color: '#e5e7eb' }
-  }
-},
-plugins: {
-  legend: {
-    labels: {
-      color: '#111827'
+const BASE_OPTS = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{labels:{color:'#8a9bc4',font:{family:'DM Sans',size:11},boxWidth:11,padding:10}},
+    tooltip:{
+      backgroundColor:'#1c2235',borderColor:'#2a3450',borderWidth:1,
+      titleColor:'#e8edf5',bodyColor:'#8a9bc4',
+      titleFont:{family:'DM Mono',size:12},bodyFont:{family:'DM Sans',size:12},
+      padding:10,displayColors:true,
     }
+  },
+  scales:{
+    x:{ticks:{color:'#5a6a8a',font:{family:'DM Sans',size:10}},grid:{color:'rgba(42,52,80,.5)'}},
+    y:{ticks:{color:'#5a6a8a',font:{family:'DM Sans',size:10}},grid:{color:'rgba(42,52,80,.5)'}}
   }
-}
+};
 
 function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
 
@@ -363,13 +346,9 @@ function bar(id,labels,datasets,extra={}){
   if(!ctx)return;
   const opts=mergeDeep(BASE_OPTS,extra);
   CH[id]=new Chart(ctx,{type:'bar',
-    data:{labels,datasets: datasets.map((d,i)=>({
-  backgroundColor: '#3b82f6',
-  borderColor: '#2563eb',
-  borderWidth: 1,
-  borderRadius: 6,
-  ...d
-})),
+    data:{labels,datasets:datasets.map((d,i)=>({
+      backgroundColor:PAL[i%PAL.length]+'bb',borderColor:PAL[i%PAL.length],
+      borderWidth:1,borderRadius:3,...d}))},
     options:opts});
 }
 
@@ -380,9 +359,9 @@ function line(id,labels,datasets,extra={}){
   const opts=mergeDeep(BASE_OPTS,extra);
   CH[id]=new Chart(ctx,{type:'line',
     data:{labels,datasets:datasets.map((d,i)=>({
-      borderColor: '#3b82f6',
-backgroundColor: 'rgba(59,130,246,0.2)',
-tension: 0.4,...d}))},
+      borderColor:PAL[i%PAL.length],backgroundColor:PAL[i%PAL.length]+'22',
+      pointBackgroundColor:PAL[i%PAL.length],pointRadius:4,
+      fill:true,tension:.4,...d}))},
     options:opts});
 }
 
