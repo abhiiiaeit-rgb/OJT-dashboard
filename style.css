@@ -1,62 +1,25 @@
-<style>
-  body {
-    background-color: #f5f7fb;
-    color: #1f2937;
-    font-family: Arial, sans-serif;
-  }
+:root{
+  --bg:#f8fafc;
+  --surface:#ffffff;
+  --surface2:#f1f5f9;
+  --surface3:#e2e8f0;
 
-  h1 {
-    color: #111827;
-  }
+  --border:#d1d5db;
+  --border2:#c7d2fe;
 
-  /* FILTER BAR */
-  select, button {
-    background: #ffffff;
-    color: #111827;
-    border: 1px solid #d1d5db;
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin: 5px;
-  }
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6b7280;
 
-  button {
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-  }
+  --accent:#3b82f6;
+  --accent2:#6366f1;
 
-  button:hover {
-    background: #1d4ed8;
-  }
+  --green:#10b981;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --pink:#ec4899;
+  --teal:#14b8a6;
 
-  /* KPI CARDS */
-  .card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 15px;
-    margin: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    display: inline-block;
-    min-width: 180px;
-  }
-
-  .card h3 {
-    margin: 0;
-    font-size: 14px;
-    color: #6b7280;
-  }
-
-  .card h2 {
-    margin: 5px 0 0;
-    color: #111827;
-  }
-
-  /* CHART AREA */
-  canvas {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-
-</style>
+  --r:12px;
+  --rs:8px;
+}
