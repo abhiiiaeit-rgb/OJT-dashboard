@@ -168,7 +168,7 @@ tbody td:first-child{color:var(--text);font-weight:500;}
   <div class="tab" data-tab="training">Training Schedule</div>
   <div class="tab" data-tab="qpkt">Quality PKT</div>
   <div class="tab" data-tab="qscore">Quality Scores</div>
-  <div class="tab" data-tab="aht">AHT</div>
+
   <div class="tab" data-tab="kra">KRA Certification</div>
   <div class="tab" data-tab="exits">Exits</div>
 </div>
@@ -243,25 +243,6 @@ tbody td:first-child{color:var(--text);font-weight:500;}
         <th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>D7</th>
         <th>D8</th><th>D9</th><th>D10</th><th>D11</th><th>D12</th><th>D13</th><th>D14</th>
       </tr></thead><tbody id="qsTbody"></tbody></table></div>
-    </div>
-  </div>
-</div>
-
-<!-- AHT -->
-<div class="tab-content" id="tab-aht">
-  <div class="kpi-grid" id="ahtKpis"></div>
-  <div style="margin-top:18px">
-    <div class="charts-grid cg2" style="margin-top:11px">
-      <div class="chart-card"><h3>Avg AHT Progression Day 1–7</h3><div class="cwt"><canvas id="chAHTTrend"></canvas></div></div>
-      <div class="chart-card"><h3>AHT Day 7 vs Target by Trainer</h3><div class="cwt"><canvas id="chAHTTrainer"></canvas></div></div>
-    </div>
-  </div>
-  <div style="margin-top:18px"><div class="sec-title">AHT per Batch</div>
-    <div class="tbl-card" style="margin-top:11px">
-      <div class="tbl-scroll"><table><thead><tr>
-        <th>Batch</th><th>Trainer</th><th>Target</th>
-        <th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>D7</th>
-      </tr></thead><tbody id="ahtTbody"></tbody></table></div>
     </div>
   </div>
 </div>
@@ -758,45 +739,6 @@ function renderQScores(data){
       ${cell(r.qs14_d8)}${cell(r.qs14_d9)}${cell(r.qs14_d10)}${cell(r.qs14_d11)}${cell(r.qs14_d12)}${cell(r.qs14_d13)}${cell(r.qs14_d14)}
     </tr>`;
   }).join('')||`<tr><td colspan="17">${empty()}</td></tr>`;
-}
-
-// ════════════════════════════════════════════════════
-// AHT — graceful empty state since source has no data
-// ════════════════════════════════════════════════════
-function renderAHT(data){
-  const ahtKeys=['aht_d1','aht_d2','aht_d3','aht_d4','aht_d5','aht_d6','aht_d7'];
-  const hasAHT=data.some(r=>ahtKeys.some(k=>r[k]!=null&&r[k]>0));
-  const tgt=avg(data,'aht_target'), d7=avg(data,'aht_d7');
-
-  document.getElementById('ahtKpis').innerHTML=
-    kpi('Avg AHT Target',tgt!=null?tgt.toFixed(0)+'s':'—','','var(--accent)')+
-    kpi('Avg AHT Day 1',avg(data,'aht_d1')!=null?avg(data,'aht_d1').toFixed(0)+'s':'—','','var(--amber)')+
-    kpi('Avg AHT Day 7',d7!=null?d7.toFixed(0)+'s':'—','',d7!=null&&tgt!=null?(d7<=tgt?'var(--green)':'var(--red)'):'var(--text3)')+
-    kpi('AHT Improvement',tgt!=null&&avg(data,'aht_d1')!=null&&avg(data,'aht_d1')>0?p((avg(data,'aht_d1')-d7)/avg(data,'aht_d1')):'—','D1→D7','var(--teal)');
-
-  const ahtLbl=['Day 1','Day 2','Day 3','Day 4','Day 5','Day 6','Day 7'];
-  if(hasAHT){
-    const tgtVal=tgt||0;
-    line('chAHTTrend',ahtLbl,[
-      {label:'Avg AHT (s)',data:ahtKeys.map(k=>{const v=avg(data,k);return v!=null?+v.toFixed(1):null;}),spanGaps:true,pointRadius:5},
-      {label:'Target',data:ahtLbl.map(()=>tgtVal),fill:false,borderDash:[5,4],borderColor:'#f5a623',backgroundColor:'transparent',pointRadius:0,tension:0}
-    ],{plugins:{...BASE_OPTS.plugins,tooltip:{...BASE_OPTS.plugins.tooltip,callbacks:{label:c=>`  ${c.dataset.label}: ${c.raw}s`}}}});
-
-    const byT=groupBy(data,'trainer'), tN=Object.keys(byT).sort();
-    bar('chAHTTrainer',tN,[
-      {label:'AHT Target (s)',data:tN.map(t=>{const v=avg(byT[t],'aht_target');return v!=null?+v.toFixed(1):0;})},
-      {label:'AHT Day 7 (s)',data:tN.map(t=>{const v=avg(byT[t],'aht_d7');return v!=null?+v.toFixed(1):0;}),backgroundColor:'#2dd4a0bb',borderColor:'#2dd4a0'}
-    ],{plugins:{...BASE_OPTS.plugins,tooltip:{...BASE_OPTS.plugins.tooltip,callbacks:{label:c=>`  ${c.dataset.label}: ${c.raw}s`}}}});
-  } else {
-    ['chAHTTrend','chAHTTrainer'].forEach(id=>{dc(id);const c=document.getElementById(id);if(c&&c.parentElement)c.parentElement.innerHTML=empty('AHT data not available in source file');});
-  }
-
-  document.getElementById('ahtTbody').innerHTML=hasAHT?data.filter(r=>ahtKeys.some(k=>r[k]!=null)).slice(0,100).map(r=>{
-    const t=r.aht_target;
-    const cell=v=>v!=null&&v>0?`<td style="${t!=null?(v<=t?'color:var(--green)':'color:var(--red)'):''}>${v.toFixed(0)}s</td>`:'<td style="color:var(--text3)">—</td>';
-    return`<tr><td>${r.batch}</td><td>${r.trainer}</td><td>${t!=null?t.toFixed(0)+'s':'—'}</td>
-      ${cell(r.aht_d1)}${cell(r.aht_d2)}${cell(r.aht_d3)}${cell(r.aht_d4)}${cell(r.aht_d5)}${cell(r.aht_d6)}${cell(r.aht_d7)}</tr>`;
-  }).join(''):`<tr><td colspan="10">${empty('AHT data not available')}</td></tr>`;
 }
 
 // ════════════════════════════════════════════════════
