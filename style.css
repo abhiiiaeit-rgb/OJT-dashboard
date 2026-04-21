@@ -1,25 +1,62 @@
-:root{
-  --bg:#f5f7fb;
-  --surface:#ffffff;
-  --surface2:#f1f4f9;
-  --surface3:#e6ecf5;
+<style>
+  body {
+    background-color: #f5f7fb;
+    color: #1f2937;
+    font-family: Arial, sans-serif;
+  }
 
-  --border:#d6deeb;
-  --border2:#c3cfe3;
+  h1 {
+    color: #111827;
+  }
 
-  --text:#1f2a44;
-  --text2:#5c6b8a;
-  --text3:#8a97b5;
+  /* FILTER BAR */
+  select, button {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 5px;
+  }
 
-  --accent:#2563eb;
-  --accent2:#7c5cfc;
+  button {
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+  }
 
-  --green:#16a34a;
-  --amber:#d97706;
-  --red:#dc2626;
-  --pink:#db2777;
-  --teal:#0891b2;
+  button:hover {
+    background: #1d4ed8;
+  }
 
-  --r:12px;
-  --rs:8px;
-}
+  /* KPI CARDS */
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: inline-block;
+    min-width: 180px;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .card h2 {
+    margin: 5px 0 0;
+    color: #111827;
+  }
+
+  /* CHART AREA */
+  canvas {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+</style>
